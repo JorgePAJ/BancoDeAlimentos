@@ -1,5 +1,5 @@
 import { StyleSheet, Text, View } from 'react-native';
-import tw from 'twrnc';
+import tw from 'tailwind-react-native-classnames';
 
 export default function App() {
   return (
