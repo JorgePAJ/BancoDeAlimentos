@@ -22,7 +22,7 @@ function LoginScreen({ navigation }) {
     signInWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
         const user = userCredential.user;
-        navigation.navigate("Register");
+        navigation.navigate("Main");
       })
       .catch((error) => {
         Alert.alert(error.message);
@@ -51,7 +51,7 @@ function LoginScreen({ navigation }) {
         onPress={handleLogin}
         style={tw`bg-blue-300 w-[80%] items-center py-3 rounded-lg`}
       >
-        <Text style={tw`text-white font-bold text-xl`}>Registrar</Text>
+        <Text style={tw`text-white font-bold text-xl`}>Iniciar sesión</Text>
       </TouchableOpacity>
     </View>
   );

@@ -6,6 +6,7 @@ import RegisterScreen from "./screens/RegisterScreen";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import LoginScreen from "./screens/LoginScreen";
+import MainScreen from "./screens/MainScreen";
 
 export default function App() {
   const [imageSwitch, setImageSwitch] = React.useState(false);
@@ -21,6 +22,7 @@ export default function App() {
         />
         <Stack.Screen name="Register" component={RegisterScreen} />
         <Stack.Screen name="Login" component={LoginScreen} />
+        <Stack.Screen name="Main" component={MainScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );
