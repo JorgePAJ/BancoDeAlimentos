@@ -1,29 +1,35 @@
-import React from "react";
-import { Button, Image, Text, TouchableOpacity, View } from "react-native";
-import tw from "twrnc";
-import WelcomeScreen from "./screens/WelcomeScreen";
-import RegisterScreen from "./screens/RegisterScreen";
+import "react-native-url-polyfill/auto";
+import "react-native-get-random-values";
+import React, { useEffect, useState } from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import LoginScreen from "./screens/LoginScreen";
-import MainScreen from "./screens/MainScreen";
+import { supabase } from "./lib/supabase";
+import { Session } from "@supabase/supabase-js";
+import Auth from "./screens/Auth";
+import AccountScreen from "./screens/Account";
 
 export default function App() {
   const [imageSwitch, setImageSwitch] = React.useState(false);
   const Stack = createNativeStackNavigator();
+  const [session, setSession] = useState<Session | null>(null);
+
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setSession(session);
+    });
+
+    supabase.auth.onAuthStateChange((_event, session) => {
+      setSession(session);
+    });
+  }, []);
 
   return (
     <NavigationContainer>
-      <Stack.Navigator>
-        <Stack.Screen
-          name="Welcome"
-          component={WelcomeScreen}
-          options={{ title: "Welcome" }}
-        />
-        <Stack.Screen name="Register" component={RegisterScreen} />
-        <Stack.Screen name="Login" component={LoginScreen} />
-        <Stack.Screen name="Main" component={MainScreen} />
-      </Stack.Navigator>
+      {session && session.user ? (
+        <AccountScreen key={session.user.id} session={session} />
+      ) : (
+        <Auth />
+      )}
     </NavigationContainer>
   );
 }
