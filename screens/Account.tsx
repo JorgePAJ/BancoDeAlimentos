@@ -49,41 +49,6 @@ export default function AccountScreen({ session }: { session: Session }) {
     }
   }
 
-  async function updateProfile({
-    username,
-    website,
-    avatar_url,
-  }: {
-    username: string;
-    website: string;
-    avatar_url: string;
-  }) {
-    try {
-      setLoading(true);
-      if (!session?.user) throw new Error("No user on the session!");
-
-      const updates = {
-        id: session?.user.id,
-        username,
-        website,
-        avatar_url,
-        updated_at: new Date(),
-      };
-
-      let { error } = await supabase.from("profiles").upsert(updates);
-
-      if (error) {
-        throw error;
-      }
-    } catch (error) {
-      if (error instanceof Error) {
-        Alert.alert(error.message);
-      }
-    } finally {
-      setLoading(false);
-    }
-  }
-
   return (
     // <View>
     //   <View style={[styles.verticallySpaced, styles.mt20]}>
@@ -127,8 +92,9 @@ export default function AccountScreen({ session }: { session: Session }) {
           ),
         }}
         name="Perfil 👤"
-        component={ProfileScreen}
-      />
+      >
+        {() => <ProfileScreen session={session} />}
+      </Tab.Screen>
     </Tab.Navigator>
   );
 }
