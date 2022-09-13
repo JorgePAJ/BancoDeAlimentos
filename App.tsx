@@ -7,10 +7,13 @@ import { supabase } from "./lib/supabase";
 import { Session } from "@supabase/supabase-js";
 import Auth from "./screens/Auth";
 import AccountScreen from "./screens/Account";
+import SendDonation from "./screens/SendDonation";
 
 export default function App() {
   const [imageSwitch, setImageSwitch] = React.useState(false);
+
   const Stack = createNativeStackNavigator();
+
   const [session, setSession] = useState<Session | null>(null);
 
   useEffect(() => {
@@ -25,11 +28,23 @@ export default function App() {
 
   return (
     <NavigationContainer>
-      {session && session.user ? (
-        <AccountScreen key={session.user.id} session={session} />
-      ) : (
-        <Auth />
-      )}
+      <Stack.Navigator>
+        {session ? (
+          <Stack.Screen name="Account">
+            {(props) => (
+              <AccountScreen
+                key={session.user.id}
+                {...props}
+                session={session}
+              />
+            )}
+          </Stack.Screen>
+        ) : (
+          <Stack.Screen name="Auth">{(props) => <Auth />}</Stack.Screen>
+        )}
+        <Stack.Screen name="AuthScreen" component={Auth} />
+        <Stack.Screen name="Enviar donación" component={SendDonation}/>
+      </Stack.Navigator>
     </NavigationContainer>
   );
 }
