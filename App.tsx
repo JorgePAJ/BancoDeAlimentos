@@ -28,7 +28,11 @@ export default function App() {
 
   return (
     <NavigationContainer>
-      <Stack.Navigator>
+      <Stack.Navigator
+        screenOptions={{
+          headerShown: false,
+        }}
+      >
         {session ? (
           <Stack.Screen name="Account">
             {(props) => (
@@ -43,7 +47,7 @@ export default function App() {
           <Stack.Screen name="Auth">{(props) => <Auth />}</Stack.Screen>
         )}
         <Stack.Screen name="AuthScreen" component={Auth} />
-        <Stack.Screen name="Enviar donación" component={SendDonation}/>
+        <Stack.Screen name="Enviar donación" component={SendDonation} />
       </Stack.Navigator>
     </NavigationContainer>
   );
