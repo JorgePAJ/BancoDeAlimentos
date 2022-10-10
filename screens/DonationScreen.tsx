@@ -18,7 +18,7 @@ function DonationScreen(
   const bottomSheetModalRef = useRef<BottomSheetModal>(null);
 
   // variables
-  const snapPoints = useMemo(() => ["25%", "50%"], []);
+  const snapPoints = useMemo(() => ["25%", "25%"], []);
 
   // callbacks
   const handlePresentModalPress = useCallback(() => {
@@ -91,9 +91,14 @@ function DonationScreen(
           index={1}
           snapPoints={snapPoints}
           onChange={handleSheetChanges}
+          style={tw`shadow-2xl`}
         >
-          <View>
-            <Text>Awesome 🎉</Text>
+          <View style={tw`flex justify-center items-center`}>
+            <Text style={tw`text-center mb-5 font-bold text-2xl`}>✨Gracias✨</Text>
+            <Text style={tw`text-center max-w-[60%] font-light`}>
+              Tu donación ha sido enviada, en unos momentos tu solicitud sera
+              aprovada por un administrador y recibiras tu xp
+            </Text>
           </View>
         </BottomSheetModal>
       </ScrollView>
