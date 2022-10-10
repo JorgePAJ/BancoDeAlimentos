@@ -200,8 +200,9 @@ function ProfileScreen({ session }: { session: Session }) {
         />
         <ScrollView style={tw`mt-2 mx-5 rounded-md bg-gray-50  h-[20rem]`}>
           {selectedIndex === 0
-            ? completadas.map((item) => (
+            ? completadas.map((item, key) => (
                 <View
+                  key={key}
                   style={tw`flex flex-row items-center mb-1 border-b-[0.5px] border-gray-300`}
                 >
                   <View style={tw`bg-gray-200 rounded-full p-0.3 mx-1`}>
@@ -219,8 +220,9 @@ function ProfileScreen({ session }: { session: Session }) {
                   </View>
                 </View>
               ))
-            : pendientes.map((item) => (
+            : pendientes.map((item,key) => (
                 <View
+                  key={key}
                   style={tw`flex flex-row items-center mb-1 py-1 border-b-[0.5px] border-gray-300`}
                 >
                   <View style={tw`bg-gray-200 rounded-full p-1 mx-1`}>
