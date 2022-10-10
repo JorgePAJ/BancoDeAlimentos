@@ -32,6 +32,7 @@ function DonationScreen(
   useEffect(() => {
     if (route.params?.SuccessModal) {
       handlePresentModalPress();
+      navigation.setParams({ SuccessModal: false });
     }
   }, [route.params?.SuccessModal]);
 
@@ -45,9 +46,7 @@ function DonationScreen(
           }}
           style={tw`w-[90vw] h-[10rem] rounded-lg shadow-lg mt-2`}
         />
-        <Text style={tw`font-semibold mt-2 text-2xl`}>
-          ¿Que puedo donar?{route.params?.SuccessModal ? "true" : "false"}
-        </Text>
+        <Text style={tw`font-semibold mt-2 text-2xl`}>¿Que puedo donar?</Text>
         <Text style={tw`mt-4 text-4`}>
           Cupidatat in aliqua cupidatat ex incididunt voluptate proident
           laboris. Esse elit irure velit nulla. Adipisicing eu laboris proident
@@ -94,7 +93,9 @@ function DonationScreen(
           style={tw`shadow-2xl`}
         >
           <View style={tw`flex justify-center items-center`}>
-            <Text style={tw`text-center mb-5 font-bold text-2xl`}>✨Gracias✨</Text>
+            <Text style={tw`text-center mb-5 font-bold text-2xl`}>
+              ✨Gracias✨
+            </Text>
             <Text style={tw`text-center max-w-[60%] font-light`}>
               Tu donación ha sido enviada, en unos momentos tu solicitud sera
               aprovada por un administrador y recibiras tu xp
