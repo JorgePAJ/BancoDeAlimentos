@@ -10,7 +10,14 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import DonationScreen from "./DonationScreen";
 import ProfileScreen from "./ProfileScreen";
 
-export default function AccountScreen({ session }: { session: Session }) {
+interface iAccountProps {
+  DonationModal?: boolean;
+}
+
+export default function AccountScreen(
+  { session }: { session: Session },
+  props: iAccountProps
+) {
   const [loading, setLoading] = useState(true);
   const [username, setUsername] = useState("");
   const [website, setWebsite] = useState("");
@@ -50,40 +57,7 @@ export default function AccountScreen({ session }: { session: Session }) {
   }
 
   return (
-    // <View>
-    //   <View style={[styles.verticallySpaced, styles.mt20]}>
-    //     <Input label="Email" value={session?.user?.email} disabled />
-    //   </View>
-    //   <View style={styles.verticallySpaced}>
-    //     <Input label="Username" value={username || ''} onChangeText={(text) => setUsername(text)} />
-    //   </View>
-    //   <View style={styles.verticallySpaced}>
-    //     <Input label="Website" value={website || ''} onChangeText={(text) => setWebsite(text)} />
-    //   </View>
-
-    //   <View style={[styles.verticallySpaced, styles.mt20]}>
-    //     <Button
-    //       title={loading ? 'Loading ...' : 'Update'}
-    //       onPress={() => updateProfile({ username, website, avatar_url: avatarUrl })}
-    //       disabled={loading}
-    //     />
-    //   </View>
-
-    //   <View style={styles.verticallySpaced}>
-    //     <Button title="Sign Out" onPress={() => supabase.auth.signOut()} />
-    //   </View>
-    // </View>
     <Tab.Navigator>
-      <Tab.Screen
-        name="Donaciones 🍲"
-        component={DonationScreen}
-        options={{
-          tabBarLabel: "Donar",
-          tabBarIcon: ({ color, size }) => (
-            <AntDesign name="heart" size={size} color={color} />
-          ),
-        }}
-      />
       <Tab.Screen
         options={{
           tabBarLabel: "Perfil",
@@ -95,6 +69,16 @@ export default function AccountScreen({ session }: { session: Session }) {
       >
         {() => <ProfileScreen session={session} />}
       </Tab.Screen>
+      <Tab.Screen
+        name="Donaciones 🍲"
+        component={DonationScreen}
+        options={{
+          tabBarLabel: "Donar",
+          tabBarIcon: ({ color, size }) => (
+            <AntDesign name="heart" size={size} color={color} />
+          ),
+        }}
+      />
     </Tab.Navigator>
   );
 }

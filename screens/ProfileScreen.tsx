@@ -1,10 +1,30 @@
+import {
+  BottomSheetModal,
+  BottomSheetModalProvider,
+} from "@gorhom/bottom-sheet";
 import { Session } from "@supabase/supabase-js";
-import React, { useState } from "react";
+import React, { useCallback, useMemo, useRef, useState } from "react";
 import { View, Text, Button, Alert } from "react-native";
+import BottomSheet from "../components/Test";
+import AnimatedStyleUpdateExample from "../components/Test";
 import { supabase } from "../lib/supabase";
 
 function ProfileScreen({ session }: { session: Session }) {
   const [loading, setLoading] = useState(true);
+
+  const bottomSheetModalRef = useRef<BottomSheetModal>(null);
+
+  // variables
+  const snapPoints = useMemo(() => ["25%", "50%"], []);
+
+  // callbacks
+  const handlePresentModalPress = useCallback(() => {
+    bottomSheetModalRef.current?.present();
+  }, []);
+  
+  const handleSheetChanges = useCallback((index: number) => {
+    console.log("handleSheetChanges", index);
+  }, []);
 
   async function updateProfile({
     username,
@@ -42,15 +62,34 @@ function ProfileScreen({ session }: { session: Session }) {
   }
 
   return (
-    <View>
-      <Text>ProfileScreen</Text>
-      <Button
-        title="Log out"
-        onPress={() => {
-          supabase.auth.signOut();
-        }}
-      />
-    </View>
+    <BottomSheetModalProvider>
+      <View>
+        <Text>ProfileScreen</Text>
+        <Button
+          title="Log out"
+          onPress={() => {
+            supabase.auth.signOut();
+          }}
+        />
+        <View>
+          <Button
+            onPress={handlePresentModalPress}
+            title="Present Modal"
+            color="black"
+          />
+          <BottomSheetModal
+            ref={bottomSheetModalRef}
+            index={1}
+            snapPoints={snapPoints}
+            onChange={handleSheetChanges}
+          >
+            <View>
+              <Text>Awesome 🎉</Text>
+            </View>
+          </BottomSheetModal>
+        </View>
+      </View>
+    </BottomSheetModalProvider>
   );
 }
 
