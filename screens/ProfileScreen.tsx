@@ -12,6 +12,7 @@ import {
   TouchableOpacity,
   Image,
   ScrollView,
+  RefreshControl,
 } from "react-native";
 import { ProgressBar, MD3Colors } from "react-native-paper";
 import SegmentedControl from "@react-native-segmented-control/segmented-control";
@@ -112,6 +113,16 @@ function ProfileScreen({ session }: { session: Session }) {
     },
   ];
 
+  const [refreshing, setRefreshing] = useState(false);
+
+  const pullMe = () => {
+    setRefreshing(true);
+    setTimeout(() => {
+      
+      setRefreshing(false);
+    }, 4000);
+  };
+
   return (
     <View style={tw`relative`}>
       {/* View superior */}
@@ -198,7 +209,12 @@ function ProfileScreen({ session }: { session: Session }) {
             setSelectedIndex(event.nativeEvent.selectedSegmentIndex);
           }}
         />
-        <ScrollView style={tw`mt-2 mx-5 rounded-md bg-gray-50  h-[20rem]`}>
+        <ScrollView
+          refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={pullMe} />
+          }
+          style={tw`mt-2 mx-5 rounded-md bg-gray-50  h-[20rem]`}
+        >
           {selectedIndex === 0
             ? completadas.map((item, key) => (
                 <View
@@ -220,7 +236,7 @@ function ProfileScreen({ session }: { session: Session }) {
                   </View>
                 </View>
               ))
-            : pendientes.map((item,key) => (
+            : pendientes.map((item, key) => (
                 <View
                   key={key}
                   style={tw`flex flex-row items-center mb-1 py-1 border-b-[0.5px] border-gray-300`}
