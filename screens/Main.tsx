@@ -10,6 +10,7 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import DonationScreen from "./DonationScreen";
 import ProfileScreen from "./ProfileScreen";
 import DonationHandler from "./DonationHandler";
+import ProfileHandler from "./ProfileHandle";
 
 interface iAccountProps {
   DonationModal?: boolean;
@@ -59,7 +60,6 @@ export default function AccountScreen(
 
   return (
     <Tab.Navigator
-      
       screenOptions={{
         headerShown: false,
         tabBarActiveTintColor: "#ea2040",
@@ -72,9 +72,9 @@ export default function AccountScreen(
             <MaterialCommunityIcons name="home" color={color} size={size} />
           ),
         }}
-        name="Perfil 👤"
+        name="Perfil"
       >
-        {() => <ProfileScreen session={session} />}
+        {() => <ProfileHandler session={session} />}
       </Tab.Screen>
       <Tab.Screen
         name="Donaciones"

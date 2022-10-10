@@ -21,8 +21,11 @@ import AnimatedStyleUpdateExample from "../components/Test";
 import { supabase } from "../lib/supabase";
 import tw from "twrnc";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { useNavigation } from "@react-navigation/native";
 
 function ProfileScreen({ session }: { session: Session }) {
+  const Navigator = useNavigation();
+
   const [loading, setLoading] = useState(true);
 
   const bottomSheetModalRef = useRef<BottomSheetModal>(null);
@@ -116,6 +119,14 @@ function ProfileScreen({ session }: { session: Session }) {
         {/* Div rosa, donde esta el label de perfil y el boton de logout */}
         <View style={tw` bg-[#ea2040] h-[50%]`}>
           <View style={tw`flex flex-row items-center justify-center top-12`}>
+            <TouchableOpacity
+              style={tw`left-2 absolute  items-center justify-center`}
+              onPress={() => {
+                Navigator.navigate("Settings", { session });
+              }}
+            >
+              <MaterialCommunityIcons name="cog" size={30} color={"white"} />
+            </TouchableOpacity>
             <Text style={tw`text-center font-bold text-[24px] text-white`}>
               Perfil
             </Text>
