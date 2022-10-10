@@ -11,13 +11,16 @@ import {
   Alert,
   TouchableOpacity,
   Image,
+  ScrollView,
 } from "react-native";
 import { ProgressBar, MD3Colors } from "react-native-paper";
+import SegmentedControl from "@react-native-segmented-control/segmented-control";
 
 import BottomSheet from "../components/Test";
 import AnimatedStyleUpdateExample from "../components/Test";
 import { supabase } from "../lib/supabase";
 import tw from "twrnc";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 
 function ProfileScreen({ session }: { session: Session }) {
   const [loading, setLoading] = useState(true);
@@ -35,6 +38,8 @@ function ProfileScreen({ session }: { session: Session }) {
   const handleSheetChanges = useCallback((index: number) => {
     console.log("handleSheetChanges", index);
   }, []);
+
+  const [selectedIndex, setSelectedIndex] = useState(0);
 
   async function updateProfile({
     username,
@@ -71,10 +76,43 @@ function ProfileScreen({ session }: { session: Session }) {
     }
   }
 
+  const completadas = [
+    { lugar: "Centro de entrega #3", xp: 20 },
+    { lugar: "Centro de entrega #4", xp: 20 },
+    { lugar: "Centro de entrega #3", xp: 20 },
+    { lugar: "Centro de entrega #4", xp: 20 },
+    { lugar: "Centro de entrega #5", xp: 20 },
+    { lugar: "Centro de entrega #3", xp: 20 },
+    { lugar: "Centro de entrega #4", xp: 20 },
+    { lugar: "Centro de entrega #5", xp: 20 },
+    { lugar: "Centro de entrega #5", xp: 20 },
+  ];
+
+  const pendientes = [
+    {
+      lugar: "Centro de entrega #1",
+    },
+    {
+      lugar: "Centro de entrega #2",
+    },
+    {
+      lugar: "Centro de entrega #3",
+    },
+    {
+      lugar: "Centro de entrega #1",
+    },
+    {
+      lugar: "Centro de entrega #2",
+    },
+    {
+      lugar: "Centro de entrega #3",
+    },
+  ];
+
   return (
     <View style={tw`relative`}>
       {/* View superior */}
-      <View style={tw`h-[70%]`}>
+      <View>
         {/* Div rosa, donde esta el label de perfil y el boton de logout */}
         <View style={tw` bg-[#ea2040] h-[60%]`}>
           <View style={tw`flex flex-row items-center justify-center top-15`}>
@@ -99,7 +137,7 @@ function ProfileScreen({ session }: { session: Session }) {
         <View
           style={{
             position: "absolute",
-            top:70,
+            top: 70,
             left: 0,
             right: 0,
             bottom: 0,
@@ -129,13 +167,67 @@ function ProfileScreen({ session }: { session: Session }) {
               color={"#ea2040"}
               style={{ height: 20, borderRadius: 10 }}
             />
-            <Text style={tw`font-thin text-center`}>20 puntos para el siguiente nivel</Text>
+            <Text style={tw`font-thin text-center`}>
+              20 puntos para el siguiente nivel
+            </Text>
           </View>
         </View>
       </View>
 
       <View>
-        <Text> HGola</Text>
+        <SegmentedControl
+          style={tw`bg-white mx-10 text-red-500`}
+          // text color to red on style
+          fontStyle={tw`text-black`}
+          tabStyle={tw`bg-[#f8fafc]`}
+          activeFontStyle={tw`text-[#ea2040]`}
+          values={["Completadas", "en revisión"]}
+          selectedIndex={selectedIndex}
+          onChange={(event) => {
+            setSelectedIndex(event.nativeEvent.selectedSegmentIndex);
+          }}
+        />
+        <ScrollView style={tw`mt-2 mx-5 rounded-md bg-gray-50  h-[16rem]`}>
+          {selectedIndex === 0
+            ? completadas.map((item) => (
+                <View
+                  style={tw`flex flex-row items-center mb-1 border-b-[0.5px] border-gray-300`}
+                >
+                  <View style={tw`bg-gray-200 rounded-full p-0.3 mx-1`}>
+                    <MaterialCommunityIcons
+                      name="check"
+                      size={30}
+                      color={"green"}
+                    />
+                  </View>
+                  <View style={tw`w-[90%]`}>
+                    <Text style={tw`font-bold`}>+{item.xp} xp</Text>
+                    <Text style={tw`font-normal`}>
+                      Donacion en {item.lugar} completada con exito!
+                    </Text>
+                  </View>
+                </View>
+              ))
+            : pendientes.map((item) => (
+                <View
+                  style={tw`flex flex-row items-center mb-1 py-1 border-b-[0.5px] border-gray-300`}
+                >
+                  <View style={tw`bg-gray-200 rounded-full p-1 mx-1`}>
+                    <MaterialCommunityIcons
+                      name="clock"
+                      size={30}
+                      color={"red"}
+                    />
+                  </View>
+                  <View style={tw`w-[90%]`}>
+                    <Text>
+                      Espera a que un administrador apruebe tu donación en{" "}
+                      <Text style={tw`font-bold`}>{item.lugar}</Text>
+                    </Text>
+                  </View>
+                </View>
+              ))}
+        </ScrollView>
       </View>
     </View>
   );
