@@ -114,8 +114,8 @@ function ProfileScreen({ session }: { session: Session }) {
       {/* View superior */}
       <View>
         {/* Div rosa, donde esta el label de perfil y el boton de logout */}
-        <View style={tw` bg-[#ea2040] h-[60%]`}>
-          <View style={tw`flex flex-row items-center justify-center top-15`}>
+        <View style={tw` bg-[#ea2040] h-[50%]`}>
+          <View style={tw`flex flex-row items-center justify-center top-12`}>
             <Text style={tw`text-center font-bold text-[24px] text-white`}>
               Perfil
             </Text>
@@ -187,7 +187,7 @@ function ProfileScreen({ session }: { session: Session }) {
             setSelectedIndex(event.nativeEvent.selectedSegmentIndex);
           }}
         />
-        <ScrollView style={tw`mt-2 mx-5 rounded-md bg-gray-50  h-[16rem]`}>
+        <ScrollView style={tw`mt-2 mx-5 rounded-md bg-gray-50  h-[20rem]`}>
           {selectedIndex === 0
             ? completadas.map((item) => (
                 <View
