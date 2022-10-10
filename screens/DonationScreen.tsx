@@ -1,6 +1,13 @@
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import React, { useCallback, useEffect, useMemo, useRef } from "react";
-import { Image, ScrollView, Text, TouchableOpacity, View } from "react-native";
+import {
+  FlatList,
+  Image,
+  ScrollView,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import tw from "twrnc";
 import {
   BottomSheetModal,
@@ -36,51 +43,119 @@ function DonationScreen(
     }
   }, [route.params?.SuccessModal]);
 
+  const noPerecederos = [
+    "Atun enlatado",
+    "Garbanzo",
+    "Sopa enlatada",
+    "Pasta enlatada",
+    "Verdura",
+    "Aceitunas envasadas",
+    "Salsas en lata",
+    "Legumbres",
+    "Arroz",
+    "Pasta cruda",
+    "Harina",
+    "Azucar",
+    "Sal",
+    "Cafe",
+    "Leche en polvo",
+    "Mermelada",
+    "Miel",
+  ];
+
+  const condiciones = [
+    "El origen debe ser conocido y provenga de empresas o establecimientos autorizados",
+    "El envase deve estar íntegro y no deteriorado",
+    "Deben estar correctamente identificados y etiquetados",
+    "La fecha de caducidad no debe estar rebasada",
+    "Deben haber sido conservados a lo largo de toda su vida útil a la temperatura adecuada indicada en el envase",
+    "Si no están envasados y son productos refrigerados o congelados, se mantendrán a las temperaturas establecidas por la normativa vigente",
+  ];
+
+  const notRecomended = [
+    "Comidas preparadas que hayan estado expuestas al público",
+    "Comidas preparadas de consumo en crudo.",
+    "Productos elaborados con huevo fresco y cremas no pasteurizadas",
+    "Quesos frescos no pasteurizados",
+    "Pescado y marisco fresco",
+  ];
+
+  const notSafe = [
+    "Carne y derivados no envasados, así como despojos",
+    "Comidas preparadas no envasadas",
+    "Comidas preparadas elaboradas en caliente",
+  ];
+
   const Stack = createNativeStackNavigator();
   return (
     <BottomSheetModalProvider>
-      <ScrollView style={tw`mx-4`}>
+      <ScrollView style={tw`mx-4 mt-10`}>
         <Image
           source={{
-            uri: "https://areajugones.sport.es/wp-content/uploads/2021/06/pikachu-pokemon.jpeg",
+            uri: "https://i.ibb.co/rdQXLYR/bamx-banner.png",
           }}
           style={tw`w-[90vw] h-[10rem] rounded-lg shadow-lg mt-2`}
         />
-        <Text style={tw`font-semibold mt-2 text-2xl`}>¿Que puedo donar?</Text>
-        <Text style={tw`mt-4 text-4`}>
-          Cupidatat in aliqua cupidatat ex incididunt voluptate proident
-          laboris. Esse elit irure velit nulla. Adipisicing eu laboris proident
-          excepteur et occaecat duis Lorem anim consectetur. Reprehenderit anim
-          nostrud sint proident esse non amet non. Nulla cupidatat pariatur
-          tempor labore reprehenderit cupidatat Lorem incididunt irure.
-          Consectetur sunt occaecat non irure id cupidatat. Pariatur commodo
-          deserunt amet in pariatur ea. Aliqua quis qui tempor excepteur Lorem
-          occaecat do anim. Nostrud ipsum officia quis ea ex cillum ipsum sint
-          tempor. Commodo duis Lorem ullamco consectetur.
+        <Text style={tw`font-bold mt-2 text-2xl`}>¿Que puedo donar?</Text>
+        <Text style={tw`font-semibold text-md mt-2 text-4.5`}>
+          Donaciones en especie:
         </Text>
-        <Text style={tw`mt-4 text-4`}>
-          Voluptate consectetur sint aliqua excepteur sit. Nostrud commodo ad
-          excepteur ut id ullamco nulla. Mollit fugiat non irure pariatur anim
-          irure deserunt irure ut voluptate ad magna. Incididunt reprehenderit
-          do proident consectetur reprehenderit Lorem ex. Non sit cillum amet
-          quis magna cupidatat laborum Lorem. Aliqua id cupidatat commodo ad
-          Lorem minim sit exercitation aliqua excepteur quis minim irure.
-          Deserunt qui incididunt dolor consequat aute excepteur eu duis cillum
-          tempor tempor consectetur.
+        <Text style={tw`mt-1 text-3.5`}>
+          Entre estos alimentos se recomienda donar frutas y verduras{` `}
+          <Text style={tw`font-semibold`}>
+            enteras, frescas y en buen estado.
+          </Text>
         </Text>
-        <Text style={tw`mt-4 text-4`}>
-          Voluptate consectetur sint aliqua excepteur sit. Nostrud commodo ad
-          excepteur ut id ullamco nulla. Mollit fugiat non irure pariatur anim
-          irure deserunt irure ut voluptate ad magna. Incididunt reprehenderit
-          do proident consectetur reprehenderit Lorem ex. Non sit cillum amet
-          quis magna cupidatat laborum Lorem. Aliqua id cupidatat commodo ad
-          Lorem minim sit exercitation aliqua excepteur quis minim irure.
-          Deserunt qui incididunt dolor consequat aute excepteur eu duis cillum
-          tempor tempor consectetur.
+        <Text style={tw`font-semibold text-md mt-2 text-4.5`}>
+          Alimentos no perecederos:
         </Text>
+        <Text style={tw`mt-1 text-3.5`}>
+          ¿Qué alimentos no perecederos suelen ser los más comunes?{` `}
+          <Text style={tw`font-semibold`}>
+            Todos aquellos que estén enlatados, en plástico o en cartón:
+          </Text>
+        </Text>
+        <View style={tw`mt-1`}>
+          {noPerecederos.map((item, index) => (
+            <Text style={tw`mt-1 text-3.5 font-thin`} key={index}>
+              {">"} <Text style={tw`font-semibold`}>{item}</Text>
+            </Text>
+          ))}
+        </View>
+        <Text style={tw`font-bold text-md mt-2 text-4.5`}>
+          Condiciones de los alimentos:
+        </Text>
+        <View style={tw`mt-1`}>
+          {condiciones.map((item, index) => (
+            <Text style={tw`mt-1 text-3.5 font-thin`} key={index}>
+              {">"} <Text style={tw`font-semibold`}>{item}</Text>
+            </Text>
+          ))}
+        </View>
+        <Text style={tw`font-bold text-md mt-2 text-4.5`}>
+          No se recomienda donar:
+        </Text>
+        <View style={tw`mt-1`}>
+          {notRecomended.map((item, index) => (
+            <Text style={tw`mt-1 text-3.5 font-thin`} key={index}>
+              {">"} <Text style={tw`font-semibold`}>{item}</Text>
+            </Text>
+          ))}
+        </View>
+        <Text style={tw`font-bold text-md mt-2 text-4.5`}>
+          Si no es posible mantener las temperaturas recomendadas, no es seguro
+          donar:
+        </Text>
+        <View style={tw`mt-1`}>
+          {notSafe.map((item, index) => (
+            <Text style={tw`mt-1 text-3.5 font-thin`} key={index}>
+              {">"} <Text style={tw`font-semibold`}>{item}</Text>
+            </Text>
+          ))}
+        </View>
 
         <TouchableOpacity
-          style={tw`w-[100%] bg-pink-400 items-center py-3 rounded-2xl mb-4 mt-6`}
+          style={tw`w-[100%] bg-[#ea2040] items-center py-3 rounded-2xl mb-4 mt-6`}
           onPress={() => navigation.push("Enviar")}
         >
           <Text style={tw`text-white text-xl font-bold`}>Donar</Text>

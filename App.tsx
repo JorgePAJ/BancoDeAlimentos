@@ -11,7 +11,7 @@ import SendDonation from "./screens/SendDonation";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import DonationScreen from "./screens/DonationScreen";
 import Account from "./screens/Main";
-
+import { Provider as PaperProvider } from "react-native-paper";
 export default function App() {
   const [imageSwitch, setImageSwitch] = React.useState(false);
 
@@ -31,27 +31,29 @@ export default function App() {
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
-      <NavigationContainer>
-        <Stack.Navigator
-          screenOptions={{
-            headerShown: false,
-          }}
-        >
-          {session ? (
-            <Stack.Screen name="Account">
-              {(props) => (
-                <AccountScreen
-                  key={session.user.id}
-                  {...props}
-                  session={session}
-                />
-              )}
-            </Stack.Screen>
-          ) : (
-            <Stack.Screen name="Auth">{(props) => <Auth />}</Stack.Screen>
-          )}
-        </Stack.Navigator>
-      </NavigationContainer>
+      <PaperProvider>
+        <NavigationContainer>
+          <Stack.Navigator
+            screenOptions={{
+              headerShown: false,
+            }}
+          >
+            {session ? (
+              <Stack.Screen name="Account">
+                {(props) => (
+                  <AccountScreen
+                    key={session.user.id}
+                    {...props}
+                    session={session}
+                  />
+                )}
+              </Stack.Screen>
+            ) : (
+              <Stack.Screen name="Auth">{(props) => <Auth />}</Stack.Screen>
+            )}
+          </Stack.Navigator>
+        </NavigationContainer>
+      </PaperProvider>
     </GestureHandlerRootView>
   );
 }

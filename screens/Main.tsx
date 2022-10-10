@@ -58,7 +58,13 @@ export default function AccountScreen(
   }
 
   return (
-    <Tab.Navigator>
+    <Tab.Navigator
+      
+      screenOptions={{
+        headerShown: false,
+        tabBarActiveTintColor: "#ea2040",
+      }}
+    >
       <Tab.Screen
         options={{
           tabBarLabel: "Perfil",
