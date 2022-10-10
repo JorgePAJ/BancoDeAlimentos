@@ -9,6 +9,7 @@ import React from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import DonationScreen from "./DonationScreen";
 import ProfileScreen from "./ProfileScreen";
+import DonationHandler from "./DonationHandler";
 
 interface iAccountProps {
   DonationModal?: boolean;
@@ -70,8 +71,8 @@ export default function AccountScreen(
         {() => <ProfileScreen session={session} />}
       </Tab.Screen>
       <Tab.Screen
-        name="Donaciones 🍲"
-        component={DonationScreen}
+        name="Donaciones"
+        component={DonationHandler}
         options={{
           tabBarLabel: "Donar",
           tabBarIcon: ({ color, size }) => (

@@ -12,7 +12,7 @@ interface iDonationScreenProps {
 }
 
 function DonationScreen(
-  { navigation },
+  { navigation, route },
   { SuccessModal }: iDonationScreenProps
 ) {
   const bottomSheetModalRef = useRef<BottomSheetModal>(null);
@@ -24,16 +24,16 @@ function DonationScreen(
   const handlePresentModalPress = useCallback(() => {
     bottomSheetModalRef.current?.present();
   }, []);
-  
+
   const handleSheetChanges = useCallback((index: number) => {
     console.log("handleSheetChanges", index);
   }, []);
 
   useEffect(() => {
-    if (SuccessModal) {
+    if (route.params?.SuccessModal) {
       handlePresentModalPress();
     }
-  }, []);
+  }, [route.params?.SuccessModal]);
 
   const Stack = createNativeStackNavigator();
   return (
@@ -45,7 +45,9 @@ function DonationScreen(
           }}
           style={tw`w-[90vw] h-[10rem] rounded-lg shadow-lg mt-2`}
         />
-        <Text style={tw`font-semibold mt-2 text-2xl`}>¿Que puedo donar?</Text>
+        <Text style={tw`font-semibold mt-2 text-2xl`}>
+          ¿Que puedo donar?{route.params?.SuccessModal ? "true" : "false"}
+        </Text>
         <Text style={tw`mt-4 text-4`}>
           Cupidatat in aliqua cupidatat ex incididunt voluptate proident
           laboris. Esse elit irure velit nulla. Adipisicing eu laboris proident
@@ -80,7 +82,7 @@ function DonationScreen(
 
         <TouchableOpacity
           style={tw`w-[100%] bg-pink-400 items-center py-3 rounded-2xl mb-4 mt-6`}
-          onPress={() => navigation.navigate("Enviar donación")}
+          onPress={() => navigation.push("Enviar")}
         >
           <Text style={tw`text-white text-xl font-bold`}>Donar</Text>
         </TouchableOpacity>

@@ -5,6 +5,7 @@ import tw from "twrnc";
 function SendDonation({ navigation }) {
   // Function that sends to Account screen and toggles a BottomSheet
   const handleDonation = () => {
+
     navigation.navigate("DonationScreen", { SuccessModal: true });
   };
 

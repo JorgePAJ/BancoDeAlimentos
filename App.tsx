@@ -6,10 +6,11 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { supabase } from "./lib/supabase";
 import { Session } from "@supabase/supabase-js";
 import Auth from "./screens/Auth";
-import AccountScreen from "./screens/Account";
+import AccountScreen from "./screens/Main";
 import SendDonation from "./screens/SendDonation";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import DonationScreen from "./screens/DonationScreen";
+import Account from "./screens/Main";
 
 export default function App() {
   const [imageSwitch, setImageSwitch] = React.useState(false);
@@ -49,9 +50,6 @@ export default function App() {
           ) : (
             <Stack.Screen name="Auth">{(props) => <Auth />}</Stack.Screen>
           )}
-          <Stack.Screen name="AuthScreen" component={Auth} />
-          <Stack.Screen name="Enviar donación" component={SendDonation} />
-          <Stack.Screen name="DonationScreen" component={DonationScreen} />
         </Stack.Navigator>
       </NavigationContainer>
     </GestureHandlerRootView>
