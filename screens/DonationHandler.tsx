@@ -3,10 +3,18 @@ import React from "react";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import DonationScreen from "./DonationScreen";
 import SendDonation from "./SendDonation";
+import { Session } from "@supabase/supabase-js";
 
 const Stack = createNativeStackNavigator();
 
-const DonationHandler = () => {
+
+interface iSettingsScreenProps{
+  session : Session,
+  navigation:any
+
+}
+
+const DonationHandler = ({session,navigation}: iSettingsScreenProps) => {
   return (
     <Stack.Navigator
       screenOptions={{
@@ -14,7 +22,9 @@ const DonationHandler = () => {
       }}
     >
       <Stack.Screen name="DonationScreen" component={DonationScreen} />
-      <Stack.Screen name="Enviar" component={SendDonation} />
+      <Stack.Screen name="Enviar" >
+        {()=><SendDonation session={session} navigation={navigation}/>}
+      </Stack.Screen>
     </Stack.Navigator>
   );
 };

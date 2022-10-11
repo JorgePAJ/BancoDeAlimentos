@@ -12,13 +12,14 @@ import ProfileScreen from "./ProfileScreen";
 import DonationHandler from "./DonationHandler";
 import ProfileHandler from "./ProfileHandle";
 
-interface iAccountProps {
-  DonationModal?: boolean;
+interface iSettingsScreenProps{
+  session : Session,
+  navigation:any
+
 }
 
 export default function AccountScreen(
-  { session }: { session: Session },
-  props: iAccountProps
+{session,navigation}: iSettingsScreenProps
 ) {
   const [loading, setLoading] = useState(true);
   const [username, setUsername] = useState("");
@@ -27,8 +28,23 @@ export default function AccountScreen(
   const Tab = createBottomTabNavigator();
 
   useEffect(() => {
-    if (session) getProfile();
+    console.log("ise")
+    if (session) sendId(session.user.id);
   }, [session]);
+
+
+  async function sendId(id:String) {
+    console.log("insert")
+  const { data, error } = await supabase
+  .from('USER')
+  .insert([
+    { userId: id },
+  ])
+  if(error){
+    console.log("error" + error.message)
+  }
+  }
+
 
   async function getProfile() {
     try {
@@ -60,12 +76,14 @@ export default function AccountScreen(
 
   return (
     <Tab.Navigator
+    
       screenOptions={{
         headerShown: false,
         tabBarActiveTintColor: "#ea2040",
       }}
     >
       <Tab.Screen
+      
         options={{
           tabBarLabel: "Perfil",
           tabBarIcon: ({ color, size }) => (
@@ -74,18 +92,19 @@ export default function AccountScreen(
         }}
         name="Perfil"
       >
-        {() => <ProfileHandler session={session} />}
+        {() => <ProfileHandler session={session} navigation={navigation}/>}
       </Tab.Screen>
       <Tab.Screen
         name="Donaciones"
-        component={DonationHandler}
         options={{
           tabBarLabel: "Donar",
           tabBarIcon: ({ color, size }) => (
             <AntDesign name="heart" size={size} color={color} />
           ),
         }}
-      />
+      >
+        {()=><DonationHandler session={session} navigation={navigation}/>}
+      </Tab.Screen>
     </Tab.Navigator>
   );
 }
