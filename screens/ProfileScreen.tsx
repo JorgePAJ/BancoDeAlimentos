@@ -3,7 +3,7 @@ import {
   BottomSheetModalProvider,
 } from "@gorhom/bottom-sheet";
 import { Session } from "@supabase/supabase-js";
-import React, { useCallback, useMemo, useRef, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   View,
   Text,
@@ -114,14 +114,58 @@ function ProfileScreen({ session }: { session: Session }) {
   ];
 
   const [refreshing, setRefreshing] = useState(false);
+ 
+  const [localLevel,setLocalLevel] = useState(0)
+  const [localRest, setLocalRest]= useState(0)
+  const [localXp,setLocalXp]= useState(0)
+
+  const [user,setUser] = useState<{
+    "isAdmin": false,
+    "userID": string,
+    "userId": string,
+    "userLastname": string,
+    "userLevel": number,
+    "userName": string,
+    "userPhoto": string,
+    "userXp": string,
+  }[]>([])
 
   const pullMe = () => {
     setRefreshing(true);
     setTimeout(() => {
-      
+      readUser()
       setRefreshing(false);
     }, 4000);
   };
+
+  const levelValues=(xp:number) =>{
+    let lvl = 0
+    let userXp = 0
+    let restante = 0
+    let res=0
+    lvl = Math.round(xp/120)
+    userXp =xp/100
+    res = userXp - Math.floor(userXp)
+    restante = xp%100
+    setLocalXp(res)
+    setLocalRest(100-restante)
+    setLocalLevel(lvl)
+  }
+
+  
+  const readUser = async () =>{
+    let { data: USER, error } = await supabase
+    .from('USER')
+    .select('*')
+    .eq('userId', session.user.id)
+    setUser(USER)
+    console.log(user.at(0).userXp)
+    levelValues(Number(user.at(0)?.userXp))
+  }
+
+  useEffect(()=>{
+    readUser()
+  },[user])
 
   return (
     <View style={tw`relative`}>
@@ -180,17 +224,17 @@ function ProfileScreen({ session }: { session: Session }) {
             }}
           />
           <Text style={{ fontWeight: "bold", fontSize: 25 }}>
-            Victoria Robertson
+            {user.at(0)?.userName+" "+user.at(0)?.userLastname}
           </Text>
           <View style={tw`w-[50%] `}>
             <ProgressBar
               // En progress necesitamos hacer un query a la base de datos para obtener el progreso del usuario
-              progress={0.5}
+              progress={localXp}
               color={"#ea2040"}
               style={{ height: 20, borderRadius: 10 }}
             />
             <Text style={tw`font-thin text-center`}>
-              20 puntos para el siguiente nivel
+              {localRest} puntos para el nivel {localLevel+1}
             </Text>
           </View>
         </View>
@@ -250,8 +294,7 @@ function ProfileScreen({ session }: { session: Session }) {
                   </View>
                   <View style={tw`w-[90%]`}>
                     <Text>
-                      Espera a que un administrador apruebe tu donación en{" "}
-                      <Text style={tw`font-bold`}>{item.lugar}</Text>
+                      Espera a que un administrador apruebe tu donación
                     </Text>
                   </View>
                 </View>

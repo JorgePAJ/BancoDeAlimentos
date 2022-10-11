@@ -2,12 +2,17 @@ import { View, Text } from "react-native";
 import React from "react";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import ProfileScreen from "./ProfileScreen";
-import Settings from "./Settings";
 import { Session } from "@supabase/supabase-js";
+import SettingsScreen from "./Settings";
 
 const Stack = createNativeStackNavigator();
+interface iSettingsScreenProps{
+  session : Session,
+  navigation:any
 
-const ProfileHandler = ({ session }: { session: Session }) => {
+}
+
+const ProfileHandler = ({session, navigation}: iSettingsScreenProps) => {
   return (
     <Stack.Navigator
       screenOptions={{
@@ -18,7 +23,9 @@ const ProfileHandler = ({ session }: { session: Session }) => {
       <Stack.Screen name="ProfileScreen">
         {() => <ProfileScreen session={session} />}
       </Stack.Screen>
-      <Stack.Screen name="Settings" component={Settings} />
+      <Stack.Screen name="Settings">
+        {()=> <SettingsScreen session={session} navigation={navigation}/>}
+      </Stack.Screen>
     </Stack.Navigator>
   );
 };
