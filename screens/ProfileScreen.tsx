@@ -121,21 +121,21 @@ function ProfileScreen({ session }: { session: Session }) {
 
   const [user,setUser] = useState<{
     "isAdmin": false,
-    "userID": string,
     "userId": string,
     "userLastname": string,
     "userLevel": number,
     "userName": string,
     "userPhoto": string,
-    "userXp": string,
+    "userXp": number,
   }[]>([])
 
   const pullMe = () => {
     setRefreshing(true);
+    readUser()
+
     setTimeout(() => {
-      readUser()
       setRefreshing(false);
-    }, 4000);
+    }, 2000);
   };
 
   const levelValues=(xp:number) =>{
@@ -158,9 +158,9 @@ function ProfileScreen({ session }: { session: Session }) {
     .from('USER')
     .select('*')
     .eq('userId', session.user.id)
+    console.log(USER)
     setUser(USER)
-    console.log(user.at(0).userXp)
-    levelValues(Number(user.at(0)?.userXp))
+    // levelValues(Number(user?.at(0)?.userXp))
   }
 
   useEffect(()=>{
