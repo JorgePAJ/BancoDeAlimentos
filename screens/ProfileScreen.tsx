@@ -16,7 +16,6 @@ import {
 } from "react-native";
 import { ProgressBar, MD3Colors } from "react-native-paper";
 import SegmentedControl from "@react-native-segmented-control/segmented-control";
-
 import BottomSheet from "../components/Test";
 import AnimatedStyleUpdateExample from "../components/Test";
 import { supabase } from "../lib/supabase";
@@ -158,7 +157,7 @@ function ProfileScreen({ session }: { session: Session }) {
     .from('USER')
     .select('*')
     .eq('userId', session.user.id)
-    console.log(USER)
+    //console.log(USER)
     setUser(USER)
     // levelValues(Number(user?.at(0)?.userXp))
   }
@@ -223,8 +222,9 @@ function ProfileScreen({ session }: { session: Session }) {
               uri: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80",
             }}
           />
+          {/* checar que rollo */}
           <Text style={{ fontWeight: "bold", fontSize: 25 }}>
-            {user.at(0)?.userName+" "+user.at(0)?.userLastname}
+            {/* {user.at(0)?.userName+" "+user.at(0)?.userLastname} */}
           </Text>
           <View style={tw`w-[50%] `}>
             <ProgressBar
