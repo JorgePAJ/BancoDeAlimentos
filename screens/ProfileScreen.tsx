@@ -25,8 +25,16 @@ import { useNavigation } from "@react-navigation/native";
 
 function ProfileScreen({ session }: { session: Session }) {
   const Navigator = useNavigation();
-
   const [loading, setLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
+  const [localLevel,setLocalLevel] = useState(0)
+  const [localRest, setLocalRest]= useState(0)
+  const [localXp,setLocalXp]= useState(0)
+
+  const [user, setUser] = useState([]);
+  const [unapproveDonations, setUnapproveDonations] = useState([]);
+  const [approveDonations, setApproveDonations] = useState([]);
+  const [donationXp, setDonationXp] = useState();
 
   const bottomSheetModalRef = useRef<BottomSheetModal>(null);
 
@@ -79,58 +87,14 @@ function ProfileScreen({ session }: { session: Session }) {
     }
   }
 
-  const completadas = [
-    { lugar: "Centro de entrega #3", xp: 20 },
-    { lugar: "Centro de entrega #4", xp: 20 },
-    { lugar: "Centro de entrega #3", xp: 20 },
-    { lugar: "Centro de entrega #4", xp: 20 },
-    { lugar: "Centro de entrega #5", xp: 20 },
-    { lugar: "Centro de entrega #3", xp: 20 },
-    { lugar: "Centro de entrega #4", xp: 20 },
-    { lugar: "Centro de entrega #5", xp: 20 },
-    { lugar: "Centro de entrega #5", xp: 20 },
-  ];
 
-  const pendientes = [
-    {
-      lugar: "Centro de entrega #1",
-    },
-    {
-      lugar: "Centro de entrega #2",
-    },
-    {
-      lugar: "Centro de entrega #3",
-    },
-    {
-      lugar: "Centro de entrega #1",
-    },
-    {
-      lugar: "Centro de entrega #2",
-    },
-    {
-      lugar: "Centro de entrega #3",
-    },
-  ];
 
-  const [refreshing, setRefreshing] = useState(false);
- 
-  const [localLevel,setLocalLevel] = useState(0)
-  const [localRest, setLocalRest]= useState(0)
-  const [localXp,setLocalXp]= useState(0)
-
-  const [user,setUser] = useState<{
-    "isAdmin": false,
-    "userId": string,
-    "userLastname": string,
-    "userLevel": number,
-    "userName": string,
-    "userPhoto": string,
-    "userXp": number,
-  }[]>([])
-
+//
   const pullMe = () => {
     setRefreshing(true);
     readUser()
+    readUnapprovedDonations()
+    readApprovedDonations()
 
     setTimeout(() => {
       setRefreshing(false);
@@ -151,20 +115,44 @@ function ProfileScreen({ session }: { session: Session }) {
     setLocalLevel(lvl)
   }
 
+
+  const readUnapprovedDonations = async () =>{
+    let { data: DONATION, error } = await supabase
+      .from('DONATION')
+      .select('*')
+      .match({UserWhoDonated: session.user.id, donationStatus: false})
+      setUnapproveDonations(DONATION)
+    }
+
+    const readApprovedDonations = async () =>{
+      let { data: DONATION, error } = await supabase
+        .from('DONATION')
+        .select('*')
+        .match({UserWhoDonated: session.user.id, donationStatus: true})
+        setApproveDonations(DONATION)
+        var xp: number;
+        for (let index = 0; index < approveDonations.length; index++) {
+          xp += approveDonations[index].cantExp;
+          console.log(approveDonations[index].cantExp)
+        }
+        setDonationXp(xp)
+      }
+
   
   const readUser = async () =>{
     let { data: USER, error } = await supabase
     .from('USER')
     .select('*')
     .eq('userId', session.user.id)
-    //console.log(USER)
     setUser(USER)
-    // levelValues(Number(user?.at(0)?.userXp))
+    levelValues(user[0].userXp)
   }
 
   useEffect(()=>{
     readUser()
-  },[user])
+    readUnapprovedDonations()
+    readApprovedDonations()
+  },[])
 
   return (
     <View style={tw`relative`}>
@@ -224,7 +212,7 @@ function ProfileScreen({ session }: { session: Session }) {
           />
           {/* checar que rollo */}
           <Text style={{ fontWeight: "bold", fontSize: 25 }}>
-            {/* {user.at(0)?.userName+" "+user.at(0)?.userLastname} */}
+            {user[0]?.userName + " " + user[0]?.userLastname}
           </Text>
           <View style={tw`w-[50%] `}>
             <ProgressBar
@@ -260,7 +248,7 @@ function ProfileScreen({ session }: { session: Session }) {
           style={tw`mt-2 mx-5 rounded-md bg-gray-50  h-[20rem]`}
         >
           {selectedIndex === 0
-            ? completadas.map((item, key) => (
+            ? approveDonations.map((item, key) => (
                 <View
                   key={key}
                   style={tw`flex flex-row items-center mb-1 border-b-[0.5px] border-gray-300`}
@@ -273,14 +261,15 @@ function ProfileScreen({ session }: { session: Session }) {
                     />
                   </View>
                   <View style={tw`w-[90%]`}>
-                    <Text style={tw`font-bold`}>+{item.xp} xp</Text>
+                    <Text style={tw`font-bold`}>+{item.cantExp} xp</Text>
                     <Text style={tw`font-normal`}>
-                      Donacion en {item.lugar} completada con exito!
+                      Donacion en completada con exito!
                     </Text>
+                    <Text> Alimentos donados: {item.contentDonation}</Text>
                   </View>
                 </View>
               ))
-            : pendientes.map((item, key) => (
+            : unapproveDonations.map((item, key) => (
                 <View
                   key={key}
                   style={tw`flex flex-row items-center mb-1 py-1 border-b-[0.5px] border-gray-300`}
