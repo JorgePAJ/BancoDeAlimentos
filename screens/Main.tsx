@@ -27,22 +27,31 @@ export default function AccountScreen(
   const [avatarUrl, setAvatarUrl] = useState("");
   const Tab = createBottomTabNavigator();
 
+  // const [id, setID] = useState([]);
+
   useEffect(() => {
-    console.log("ise")
-    if (session) sendId(session.user.id);
-  }, [session]);
+    sendId(session.user.id);
+    // isRegistered()
+    // console.log(id)
+    // console.log(id[0].userId)
+  }, []);
 
-
+  // async function isRegistered() {
+  //   let { data: USER, error } = await supabase
+  //   .from('USER')
+  //   .select('userId')
+  //   .eq('userId', session.user.id)
+  //   setID(USER)
+  // }
+  
   async function sendId(id:String) {
-    console.log("insert")
+    //console.log("insert")
   const { data, error } = await supabase
   .from('USER')
   .insert([
     { userId: id },
   ])
-  if(error){
-    console.log("error" + error.message)
-  }
+  //if(error) console.log(error.message)
   }
 
 
