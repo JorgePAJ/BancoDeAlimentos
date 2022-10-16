@@ -135,7 +135,7 @@ function ProfileScreen({ session }: { session: Session }) {
           xp += approveDonations[index].cantExp;
           console.log(approveDonations[index].cantExp)
         }
-        setDonationXp(xp)
+        //setDonationXp(xp)
       }
 
   
@@ -145,7 +145,7 @@ function ProfileScreen({ session }: { session: Session }) {
     .select('*')
     .eq('userId', session.user.id)
     setUser(USER)
-    levelValues(user[0].userXp)
+    {!user[0]?.isAdmin && levelValues(user[0].userXp)}
   }
 
   useEffect(()=>{
@@ -214,40 +214,46 @@ function ProfileScreen({ session }: { session: Session }) {
           <Text style={{ fontWeight: "bold", fontSize: 25 }}>
             {user[0]?.userName + " " + user[0]?.userLastname}
           </Text>
-          <View style={tw`w-[50%] `}>
-            <ProgressBar
-              // En progress necesitamos hacer un query a la base de datos para obtener el progreso del usuario
-              progress={localXp}
-              color={"#ea2040"}
-              style={{ height: 20, borderRadius: 10 }}
-            />
-            <Text style={tw`font-thin text-center`}>
-              {localRest} puntos para el nivel {localLevel+1}
-            </Text>
-          </View>
+          {user[0]?.isAdmin ? (<></>):(
+                      <View style={tw`w-[50%] `}>
+                      <ProgressBar
+                        // En progress necesitamos hacer un query a la base de datos para obtener el progreso del usuario
+                        progress={localXp}
+                        color={"#ea2040"}
+                        style={{ height: 20, borderRadius: 10 }}
+                      />
+                      <Text style={tw`font-thin text-center`}>
+                        {localRest} puntos para el nivel {localLevel+1}
+                      </Text>
+                    </View>
+          )}
         </View>
       </View>
 
       <View>
-        <SegmentedControl
-          style={tw`bg-white mx-10 text-red-500`}
-          // text color to red on style
-          fontStyle={tw`text-black`}
-          tabStyle={tw`bg-[#f8fafc]`}
-          activeFontStyle={tw`text-[#ea2040]`}
-          values={["Completadas", "en revisión"]}
-          selectedIndex={selectedIndex}
-          onChange={(event) => {
-            setSelectedIndex(event.nativeEvent.selectedSegmentIndex);
-          }}
-        />
+        {!user[0]?.isAdmin && (
+            <SegmentedControl
+            style={tw`bg-white mx-10 text-red-500`}
+            // text color to red on style
+            fontStyle={tw`text-black`}
+            tabStyle={tw`bg-[#f8fafc]`}
+            activeFontStyle={tw`text-[#ea2040]`}
+            values={["Completadas", "en revisión"]}
+            selectedIndex={selectedIndex}
+            onChange={(event) => {
+              setSelectedIndex(event.nativeEvent.selectedSegmentIndex);
+            }}
+            />
+        )}
+      
         <ScrollView
           refreshControl={
             <RefreshControl refreshing={refreshing} onRefresh={pullMe} />
           }
           style={tw`mt-2 mx-5 rounded-md bg-gray-50  h-[20rem]`}
         >
-          {selectedIndex === 0
+          {user[0]?.isAdmin ? (<></>) : (<>
+            {selectedIndex === 0
             ? approveDonations.map((item, key) => (
                 <View
                   key={key}
@@ -288,6 +294,8 @@ function ProfileScreen({ session }: { session: Session }) {
                   </View>
                 </View>
               ))}
+          </>)}
+
         </ScrollView>
       </View>
     </View>
