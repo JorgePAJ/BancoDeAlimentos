@@ -3,7 +3,13 @@ import {
   BottomSheetModalProvider,
 } from "@gorhom/bottom-sheet";
 import { Session } from "@supabase/supabase-js";
-import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import {
   View,
   Text,
@@ -27,9 +33,9 @@ function ProfileScreen({ session }: { session: Session }) {
   const Navigator = useNavigation();
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
-  const [localLevel,setLocalLevel] = useState(0)
-  const [localRest, setLocalRest]= useState(0)
-  const [localXp,setLocalXp]= useState(0)
+  const [localLevel, setLocalLevel] = useState(0);
+  const [localRest, setLocalRest] = useState(0);
+  const [localXp, setLocalXp] = useState(0);
 
   const [user, setUser] = useState([]);
   const [unapproveDonations, setUnapproveDonations] = useState([]);
@@ -87,72 +93,116 @@ function ProfileScreen({ session }: { session: Session }) {
     }
   }
 
-
-
-//
+  //
   const pullMe = () => {
     setRefreshing(true);
-    readUser()
-    readUnapprovedDonations()
-    readApprovedDonations()
+    readUser();
+    readUnapprovedDonations();
+    readApprovedDonations();
 
     setTimeout(() => {
       setRefreshing(false);
     }, 2000);
   };
 
-  const levelValues=(xp:number) =>{
-    let lvl = 0
-    let userXp = 0
-    let restante = 0
-    let res=0
-    lvl = Math.round(xp/120)
-    userXp =xp/100
-    res = userXp - Math.floor(userXp)
-    restante = xp%100
-    setLocalXp(res)
-    setLocalRest(100-restante)
-    setLocalLevel(lvl)
-  }
+  const levelValues = (xp: number) => {
+    let lvl = 0;
+    let userXp = 0;
+    let restante = 0;
+    let res = 0;
+    lvl = Math.round(xp / 120);
+    userXp = xp / 100;
+    res = userXp - Math.floor(userXp);
+    restante = xp % 100;
+    setLocalXp(res);
+    setLocalRest(100 - restante);
+    setLocalLevel(lvl);
+  };
 
-
-  const readUnapprovedDonations = async () =>{
+  const readUnapprovedDonations = async () => {
     let { data: DONATION, error } = await supabase
-      .from('DONATION')
-      .select('*')
-      .match({UserWhoDonated: session.user.id, donationStatus: false})
-      setUnapproveDonations(DONATION)
+      .from("DONATION")
+      .select("*")
+      .match({ UserWhoDonated: session.user.id, donationStatus: false });
+    setUnapproveDonations(DONATION);
+  };
+
+  const readApprovedDonations = async () => {
+    let { data: DONATION, error } = await supabase
+      .from("DONATION")
+      .select("*")
+      .match({ UserWhoDonated: session.user.id, donationStatus: true });
+    setApproveDonations(DONATION);
+    var xp: number;
+    for (let index = 0; index < approveDonations.length; index++) {
+      xp += approveDonations[index].cantExp;
+      console.log(approveDonations[index].cantExp);
     }
+    //setDonationXp(xp)
+  };
 
-    const readApprovedDonations = async () =>{
-      let { data: DONATION, error } = await supabase
-        .from('DONATION')
-        .select('*')
-        .match({UserWhoDonated: session.user.id, donationStatus: true})
-        setApproveDonations(DONATION)
-        var xp: number;
-        for (let index = 0; index < approveDonations.length; index++) {
-          xp += approveDonations[index].cantExp;
-          console.log(approveDonations[index].cantExp)
-        }
-        //setDonationXp(xp)
-      }
-
-  
-  const readUser = async () =>{
+  const readUser = async () => {
     let { data: USER, error } = await supabase
-    .from('USER')
-    .select('*')
-    .eq('userId', session.user.id)
-    setUser(USER)
-    {!user[0]?.isAdmin && levelValues(user[0].userXp)}
-  }
+      .from("USER")
+      .select("*")
+      .eq("userId", session.user.id);
+    setUser(USER);
+    {
+      !user[0]?.isAdmin && levelValues(user[0].userXp);
+    }
+  };
 
-  useEffect(()=>{
-    readUser()
-    readUnapprovedDonations()
-    readApprovedDonations()
-  },[])
+  useEffect(() => {
+    readUser();
+    readUnapprovedDonations();
+    readApprovedDonations();
+  }, []);
+
+  const donacionesTest = [
+    {
+      donationId: 1,
+      contentDonation:
+        "Donacion de prueba y muchas coiasas divert idasdn asdas",
+      cantExp: 10,
+      donationStatus: false,
+      UserWhoDonated: "93418ef0-6664-409c-a1e0-301381454636",
+    },
+    {
+      donationId: 1,
+      contentDonation: "Donacion de prueba",
+      cantExp: 10,
+      donationStatus: false,
+      UserWhoDonated: "93418ef0-6664-409c-a1e0-301381454636",
+    },
+    {
+      donationId: 1,
+      contentDonation: "Donacion de prueba",
+      cantExp: 10,
+      donationStatus: false,
+      UserWhoDonated: "93418ef0-6664-409c-a1e0-301381454636",
+    },
+    {
+      donationId: 1,
+      contentDonation: "Donacion de prueba",
+      cantExp: 10,
+      donationStatus: false,
+      UserWhoDonated: "93418ef0-6664-409c-a1e0-301381454636",
+    },
+    {
+      donationId: 1,
+      contentDonation: "Donacion de prueba",
+      cantExp: 10,
+      donationStatus: false,
+      UserWhoDonated: "93418ef0-6664-409c-a1e0-301381454636",
+    },
+    {
+      donationId: 1,
+      contentDonation: "Donacion de prueba",
+      cantExp: 10,
+      donationStatus: false,
+      UserWhoDonated: "93418ef0-6664-409c-a1e0-301381454636",
+    },
+  ];
 
   return (
     <View style={tw`relative`}>
@@ -214,25 +264,27 @@ function ProfileScreen({ session }: { session: Session }) {
           <Text style={{ fontWeight: "bold", fontSize: 25 }}>
             {user[0]?.userName + " " + user[0]?.userLastname}
           </Text>
-          {user[0]?.isAdmin ? (<></>):(
-                      <View style={tw`w-[50%] `}>
-                      <ProgressBar
-                        // En progress necesitamos hacer un query a la base de datos para obtener el progreso del usuario
-                        progress={localXp}
-                        color={"#ea2040"}
-                        style={{ height: 20, borderRadius: 10 }}
-                      />
-                      <Text style={tw`font-thin text-center`}>
-                        {localRest} puntos para el nivel {localLevel+1}
-                      </Text>
-                    </View>
+          {user[0]?.isAdmin ? (
+            <Text>Donaciones pendientes</Text>
+          ) : (
+            <View style={tw`w-[50%] `}>
+              <ProgressBar
+                // En progress necesitamos hacer un query a la base de datos para obtener el progreso del usuario
+                progress={localXp}
+                color={"#ea2040"}
+                style={{ height: 20, borderRadius: 10 }}
+              />
+              <Text style={tw`font-thin text-center`}>
+                {localRest} puntos para el nivel {localLevel + 1}
+              </Text>
+            </View>
           )}
         </View>
       </View>
 
       <View>
         {!user[0]?.isAdmin && (
-            <SegmentedControl
+          <SegmentedControl
             style={tw`bg-white mx-10 text-red-500`}
             // text color to red on style
             fontStyle={tw`text-black`}
@@ -243,59 +295,100 @@ function ProfileScreen({ session }: { session: Session }) {
             onChange={(event) => {
               setSelectedIndex(event.nativeEvent.selectedSegmentIndex);
             }}
-            />
+          />
         )}
-      
+
         <ScrollView
           refreshControl={
             <RefreshControl refreshing={refreshing} onRefresh={pullMe} />
           }
           style={tw`mt-2 mx-5 rounded-md bg-gray-50  h-[20rem]`}
         >
-          {user[0]?.isAdmin ? (<></>) : (<>
-            {selectedIndex === 0
-            ? approveDonations.map((item, key) => (
-                <View
-                  key={key}
-                  style={tw`flex flex-row items-center mb-1 border-b-[0.5px] border-gray-300`}
-                >
-                  <View style={tw`bg-gray-200 rounded-full p-0.3 mx-1`}>
-                    <MaterialCommunityIcons
-                      name="check"
-                      size={30}
-                      color={"green"}
-                    />
-                  </View>
-                  <View style={tw`w-[90%]`}>
-                    <Text style={tw`font-bold`}>+{item.cantExp} xp</Text>
-                    <Text style={tw`font-normal`}>
-                      Donacion en completada con exito!
+          {user[0]?.isAdmin ? (
+            donacionesTest.map((donation, key) => (
+              <View
+                key={key}
+                style={tw`flex  flex-row items-center mb-1 border-b-[0.5px] border-gray-300`}
+              >
+                <View style={tw`w-[100%]`}>
+                  <Text style={tw`ml-1 font-bold`}>
+                    {donation.UserWhoDonated}
+                  </Text>
+                  <View
+                    style={tw`flex flex flex-row justify-around  w-[100%] items-center`}
+                  >
+                    <Text
+                      numberOfLines={3}
+                      style={tw`font-normal flex w-[60%] my-1`}
+                    >
+                      {donation.contentDonation}
                     </Text>
-                    <Text> Alimentos donados: {item.contentDonation}</Text>
+                    <View style={tw`flex flex-row `}>
+                      <TouchableOpacity onPress={()=>{}}>
+                        <MaterialCommunityIcons
+                          name="check"
+                          size={30}
+                          color={"green"}
+                          style={tw`mr-2`}
+                        />
+                      </TouchableOpacity>
+                      <TouchableOpacity onPress={()=>{}}>
+                        <MaterialCommunityIcons
+                          name="close"
+                          size={30}
+                          color={"red"}
+                        />
+                      </TouchableOpacity >
+                    </View>
                   </View>
                 </View>
-              ))
-            : unapproveDonations.map((item, key) => (
-                <View
-                  key={key}
-                  style={tw`flex flex-row items-center mb-1 py-1 border-b-[0.5px] border-gray-300`}
-                >
-                  <View style={tw`bg-gray-200 rounded-full p-1 mx-1`}>
-                    <MaterialCommunityIcons
-                      name="clock"
-                      size={30}
-                      color={"red"}
-                    />
-                  </View>
-                  <View style={tw`w-[90%]`}>
-                    <Text>
-                      Espera a que un administrador apruebe tu donación
-                    </Text>
-                  </View>
-                </View>
-              ))}
-          </>)}
-
+              </View>
+            ))
+          ) : (
+            <>
+              {selectedIndex === 0
+                ? approveDonations.map((item, key) => (
+                    <View
+                      key={key}
+                      style={tw`flex flex-row items-center mb-1 border-b-[0.5px] border-gray-300`}
+                    >
+                      <View style={tw`bg-gray-200 rounded-full p-0.3 mx-1`}>
+                        <MaterialCommunityIcons
+                          name="check"
+                          size={30}
+                          color={"green"}
+                        />
+                      </View>
+                      <View style={tw`w-[90%]`}>
+                        <Text style={tw`font-bold`}>+{item.cantExp} xp</Text>
+                        <Text style={tw`font-normal`}>
+                          Donacion en completada con exito!
+                        </Text>
+                        <Text> Alimentos donados: {item.contentDonation}</Text>
+                      </View>
+                    </View>
+                  ))
+                : unapproveDonations.map((item, key) => (
+                    <View
+                      key={key}
+                      style={tw`flex flex-row items-center mb-1 py-1 border-b-[0.5px] border-gray-300`}
+                    >
+                      <View style={tw`bg-gray-200 rounded-full p-1 mx-1`}>
+                        <MaterialCommunityIcons
+                          name="clock"
+                          size={30}
+                          color={"red"}
+                        />
+                      </View>
+                      <View style={tw`w-[90%]`}>
+                        <Text>
+                          Espera a que un administrador apruebe tu donación
+                        </Text>
+                      </View>
+                    </View>
+                  ))}
+            </>
+          )}
         </ScrollView>
       </View>
     </View>
