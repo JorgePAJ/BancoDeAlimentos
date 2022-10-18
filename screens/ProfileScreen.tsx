@@ -41,6 +41,7 @@ function ProfileScreen({ session }: { session: Session }) {
   const [unapproveDonations, setUnapproveDonations] = useState([]);
   const [approveDonations, setApproveDonations] = useState([]);
   const [donationXp, setDonationXp] = useState();
+  const [pendingDonations, setPendingDonations] = useState([]);
 
   const bottomSheetModalRef = useRef<BottomSheetModal>(null);
 
@@ -93,12 +94,14 @@ function ProfileScreen({ session }: { session: Session }) {
     }
   }
 
+
   //
   const pullMe = () => {
     setRefreshing(true);
     readUser();
     readUnapprovedDonations();
     readApprovedDonations();
+    readPendingDonations();
 
     setTimeout(() => {
       setRefreshing(false);
@@ -133,11 +136,11 @@ function ProfileScreen({ session }: { session: Session }) {
       .select("*")
       .match({ UserWhoDonated: session.user.id, donationStatus: true });
     setApproveDonations(DONATION);
-    var xp: number;
-    for (let index = 0; index < approveDonations.length; index++) {
-      xp += approveDonations[index].cantExp;
-      console.log(approveDonations[index].cantExp);
-    }
+    // var xp: number;
+    // for (let index = 0; index < approveDonations.length; index++) {
+    //   xp += approveDonations[index].cantExp;
+    //   console.log(approveDonations[index].cantExp);
+    // }
     //setDonationXp(xp)
   };
 
@@ -148,61 +151,84 @@ function ProfileScreen({ session }: { session: Session }) {
       .eq("userId", session.user.id);
     setUser(USER);
     {
-      !user[0]?.isAdmin && levelValues(user[0].userXp);
+      !user[0]?.isAdmin && levelValues(user[0]?.userXp);
     }
   };
+
+
+
+  // const readPendingDonations = async () => {
+  //   const { data: DONATION, error } = await supabase
+  //   .from('USER')
+  //   .select(`
+  //     userId,
+  //     userName,
+  //     userLastname,
+  //     DONATION(
+  //       contentDonation
+  //     )
+  //   `)
+  //   .eq('DONATION.donationStatus', 'false')
+  //   setPendingDonations(DONATION)
+  //   console.log(pendingDonations.DONATIONS)
+  // }
+
+    const readPendingDonations = async () => {
+    const { data: DONATION, error } = await supabase
+    .from('DONATION')
+    .select(`
+      donationId,
+      contentDonation,
+      USER(
+        userId,
+        userName,
+        userLastname
+      )
+    `)
+    .eq('donationStatus', 'false')
+    setPendingDonations(DONATION)
+    //console.log(pendingDonations)
+  }
+
+  const changeStatus = async (donationId: number) => {
+    const { data, error } = await supabase
+    .from('DONATION')
+    .update({ donationStatus: 'true' })
+    .eq('donationId', donationId)
+  }
+
+  const deleteDonation = async (donationId: number) => {
+    const { data, error } = await supabase
+    .from('DONATION')
+    .delete()
+    .eq('donationId', donationId)
+  }
+
+  const sumXp = async (userId: string, xp: number) => {
+    const { data, error } = await supabase
+    .from('USER')
+    .update({ userXp: (xp + 20) })
+    .eq('userId', userId)
+  }
+
+  const updateXp = async (userId: string, donationId: number) => {
+    const { data: USER, error } = await supabase
+    .from('USER')
+    .select('userXp')
+    .eq("userId", userId);
+    changeStatus(donationId);
+    sumXp(userId, USER[0].userXp)
+  }
 
   useEffect(() => {
     readUser();
     readUnapprovedDonations();
     readApprovedDonations();
+    readPendingDonations();
+    //updateXp("93418ef0-6664-409c-a1e0-301381454636", 2)
   }, []);
 
-  const donacionesTest = [
-    {
-      donationId: 1,
-      contentDonation:
-        "Donacion de prueba y muchas coiasas divert idasdn asdas",
-      cantExp: 10,
-      donationStatus: false,
-      UserWhoDonated: "93418ef0-6664-409c-a1e0-301381454636",
-    },
-    {
-      donationId: 1,
-      contentDonation: "Donacion de prueba",
-      cantExp: 10,
-      donationStatus: false,
-      UserWhoDonated: "93418ef0-6664-409c-a1e0-301381454636",
-    },
-    {
-      donationId: 1,
-      contentDonation: "Donacion de prueba",
-      cantExp: 10,
-      donationStatus: false,
-      UserWhoDonated: "93418ef0-6664-409c-a1e0-301381454636",
-    },
-    {
-      donationId: 1,
-      contentDonation: "Donacion de prueba",
-      cantExp: 10,
-      donationStatus: false,
-      UserWhoDonated: "93418ef0-6664-409c-a1e0-301381454636",
-    },
-    {
-      donationId: 1,
-      contentDonation: "Donacion de prueba",
-      cantExp: 10,
-      donationStatus: false,
-      UserWhoDonated: "93418ef0-6664-409c-a1e0-301381454636",
-    },
-    {
-      donationId: 1,
-      contentDonation: "Donacion de prueba",
-      cantExp: 10,
-      donationStatus: false,
-      UserWhoDonated: "93418ef0-6664-409c-a1e0-301381454636",
-    },
-  ];
+
 
   return (
     <View style={tw`relative`}>
@@ -260,7 +286,6 @@ function ProfileScreen({ session }: { session: Session }) {
               uri: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80",
             }}
           />
-          {/* checar que rollo */}
           <Text style={{ fontWeight: "bold", fontSize: 25 }}>
             {user[0]?.userName + " " + user[0]?.userLastname}
           </Text>
@@ -305,14 +330,14 @@ function ProfileScreen({ session }: { session: Session }) {
           style={tw`mt-2 mx-5 rounded-md bg-gray-50  h-[20rem]`}
         >
           {user[0]?.isAdmin ? (
-            donacionesTest.map((donation, key) => (
+            pendingDonations?.map((donation, key) => (
               <View
                 key={key}
                 style={tw`flex  flex-row items-center mb-1 border-b-[0.5px] border-gray-300`}
               >
                 <View style={tw`w-[100%]`}>
                   <Text style={tw`ml-1 font-bold`}>
-                    {donation.UserWhoDonated}
+                    {donation.USER.userName + " " + donation.USER.userLastname}
                   </Text>
                   <View
                     style={tw`flex flex flex-row justify-around  w-[100%] items-center`}
@@ -324,7 +349,9 @@ function ProfileScreen({ session }: { session: Session }) {
                       {donation.contentDonation}
                     </Text>
                     <View style={tw`flex flex-row `}>
-                      <TouchableOpacity onPress={()=>{}}>
+                      <TouchableOpacity onPress={()=>{
+                        updateXp(donation.USER.userId, donation.donationId)
+                      }}>
                         <MaterialCommunityIcons
                           name="check"
                           size={30}
@@ -332,7 +359,9 @@ function ProfileScreen({ session }: { session: Session }) {
                           style={tw`mr-2`}
                         />
                       </TouchableOpacity>
-                      <TouchableOpacity onPress={()=>{}}>
+                      <TouchableOpacity onPress={()=>{
+                        deleteDonation(donation.donationId)
+                      }}>
                         <MaterialCommunityIcons
                           name="close"
                           size={30}
@@ -360,7 +389,7 @@ function ProfileScreen({ session }: { session: Session }) {
                         />
                       </View>
                       <View style={tw`w-[90%]`}>
-                        <Text style={tw`font-bold`}>+{item.cantExp} xp</Text>
+                        <Text style={tw`font-bold`}>20 xp</Text>
                         <Text style={tw`font-normal`}>
                           Donacion en completada con exito!
                         </Text>
