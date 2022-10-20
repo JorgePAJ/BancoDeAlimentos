@@ -117,6 +117,7 @@ function ProfileScreen({ session }: { session: Session }) {
     userXp = xp / 100;
     res = userXp - Math.floor(userXp);
     restante = xp % 100;
+    
     setLocalXp(res);
     setLocalRest(100 - restante);
     setLocalLevel(lvl);
@@ -150,10 +151,14 @@ function ProfileScreen({ session }: { session: Session }) {
       .select("*")
       .eq("userId", session.user.id);
     setUser(USER);
-    {
-      !user[0]?.isAdmin && levelValues(user[0]?.userXp);
-    }
+
   };
+
+  useEffect(() => {
+    const [currentUser] = user;
+    if(currentUser && !currentUser.isAdmin) {
+      levelValues(currentUser.userXp)}
+  }, [user]);
 
 
 
@@ -296,8 +301,8 @@ function ProfileScreen({ session }: { session: Session }) {
               <ProgressBar
                 // En progress necesitamos hacer un query a la base de datos para obtener el progreso del usuario
                 progress={localXp}
-                color={"#ea2040"}
-                style={{ height: 20, borderRadius: 10 }}
+                color={MD3Colors.error50}
+                style={{ height: 20, borderRadius: 10}}
               />
               <Text style={tw`font-thin text-center`}>
                 {localRest} puntos para el nivel {localLevel + 1}
